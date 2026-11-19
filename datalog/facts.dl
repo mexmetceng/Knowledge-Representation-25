@@ -1,0 +1,2 @@
+% Facts: dishes, ingredients, allergens — encoded from the CSV files in shared/.
+% Comment syntax depends on the Datalog engine you pick; change it if needed.

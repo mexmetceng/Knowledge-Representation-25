@@ -4,6 +4,15 @@ A Smart Restaurant Menu Knowledge Base built using **OWL and Datalog** to repres
 
 The project explores logical reasoning to classify menu items, identify allergens, and determine dietary suitability while comparing two knowledge representation formalisms.
 
+## 🗂 Repository Layout
+
+- `shared/` – dataset and competency questions used by both systems
+- `owl/` – OWL ontology and queries
+- `datalog/` – Datalog facts, rules and queries
+- `comparison/` – metrics and results
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for our branch and pull request workflow.
+
 ## 📄 Project Report (LaTeX)
 
 Our project report is written collaboratively in LaTeX using Overleaf.
