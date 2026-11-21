@@ -1,1 +1,17 @@
 dish_id,name,protein_g,carbs_g,fat_g
+d_lentil_soup,Lentil Soup,12,30,5
+d_chickpea_curry,Chickpea Curry,14,55,9
+d_tofu_stir_fry,Tofu Stir Fry,18,20,12
+d_peanut_noodles,Peanut Noodles,14,65,16
+d_margherita_pizza,Margherita Pizza,18,60,14
+d_cheese_omelette,Cheese Omelette,22,2,28
+d_honey_walnut_cake,Honey Walnut Cake,8,55,24
+d_grilled_chicken,Grilled Chicken,38,45,10
+d_kosher_chicken_plate,Kosher Chicken Plate,36,40,9
+d_beef_burger,Beef Burger,30,40,28
+d_lamb_kebab,Lamb Kebab,32,35,22
+d_carbonara,Carbonara,25,55,30
+d_beef_stew,Beef Stew,30,18,15
+d_grilled_salmon,Grilled Salmon,34,5,22
+d_shrimp_rice,Shrimp Rice,28,50,10
+d_mussels_wine,Mussels in Wine,24,8,14

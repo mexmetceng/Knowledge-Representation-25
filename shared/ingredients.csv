@@ -1,1 +1,31 @@
 ingredient_id,name,category,allergen,slaughter
+i_lentils,Lentils,plant,,
+i_chickpeas,Chickpeas,plant,,
+i_rice,Rice,plant,,
+i_tomato,Tomato,plant,,
+i_carrot,Carrot,plant,,
+i_broccoli,Broccoli,plant,,
+i_olive_oil,Olive oil,plant,,
+i_wheat_flour,Wheat flour,plant,gluten,
+i_peanuts,Peanuts,plant,peanuts,
+i_walnuts,Walnuts,plant,nuts,
+i_tofu,Tofu,plant,soy,
+i_sesame,Sesame seeds,plant,sesame,
+i_celery,Celery,plant,celery,
+i_mustard,Mustard,plant,mustard,
+i_milk,Milk,dairy,milk,
+i_cheese,Cheese,dairy,milk,
+i_butter,Butter,dairy,milk,
+i_egg,Egg,egg,egg,
+i_honey,Honey,honey,,
+i_chicken_halal,Chicken (halal),poultry,,halal
+i_chicken_kosher,Chicken (kosher),poultry,,kosher
+i_beef_halal,Beef (halal),beef,,halal
+i_beef_unknown,Beef,beef,,
+i_lamb_halal,Lamb (halal),lamb,,halal
+i_pork,Pork,pork,,
+i_bacon,Bacon,pork,,
+i_salmon,Salmon,fish,fish,
+i_shrimp,Shrimp,shellfish,crustaceans,
+i_mussels,Mussels,shellfish,molluscs,
+i_red_wine,Red Wine,alcohol,sulphites,
