@@ -13,10 +13,22 @@
 #    Object Properties
 #################################################################
 
+###  http://example.org/kr25/restaurant#dietaryRestriction
+:dietaryRestriction rdf:type owl:ObjectProperty .
+
+
+###  http://example.org/kr25/restaurant#hasAllergen
+:hasAllergen rdf:type owl:ObjectProperty .
+
+
 ###  http://example.org/kr25/restaurant#hasCuisine
 :hasCuisine rdf:type owl:ObjectProperty ;
             rdfs:domain :Restaurant ;
             rdfs:range :Cuisine .
+
+
+###  http://example.org/kr25/restaurant#ingredientCategory
+:ingredientCategory rdf:type owl:ObjectProperty .
 
 
 #################################################################
@@ -27,6 +39,18 @@
 :closesAt rdf:type owl:DatatypeProperty ;
           rdfs:domain :Restaurant ;
           rdfs:range xsd:integer .
+
+
+###  http://example.org/kr25/restaurant#gramsOfCarbs
+:gramsOfCarbs rdf:type owl:DatatypeProperty .
+
+
+###  http://example.org/kr25/restaurant#gramsOfFat
+:gramsOfFat rdf:type owl:DatatypeProperty .
+
+
+###  http://example.org/kr25/restaurant#gramsOfProtein
+:gramsOfProtein rdf:type owl:DatatypeProperty .
 
 
 ###  http://example.org/kr25/restaurant#hasName
@@ -56,12 +80,58 @@
 #    Classes
 #################################################################
 
+###  http://example.org/kr25/restaurant#Allergen
+:Allergen rdf:type owl:Class .
+
+
+###  http://example.org/kr25/restaurant#Buffet
+:Buffet rdf:type owl:Class ;
+        rdfs:subClassOf :Restaurant .
+
+
+###  http://example.org/kr25/restaurant#Cafe
+:Cafe rdf:type owl:Class ;
+      rdfs:subClassOf :Restaurant .
+
+
+###  http://example.org/kr25/restaurant#Casual_Restaurant
+:Casual_Restaurant rdf:type owl:Class ;
+                   rdfs:subClassOf :Restaurant .
+
+
 ###  http://example.org/kr25/restaurant#Cuisine
 :Cuisine rdf:type owl:Class .
 
 
+###  http://example.org/kr25/restaurant#DietaryRestriction
+:DietaryRestriction rdf:type owl:Class .
+
+
+###  http://example.org/kr25/restaurant#Dish
+:Dish rdf:type owl:Class .
+
+
+###  http://example.org/kr25/restaurant#Fast_Food_Restaurant
+:Fast_Food_Restaurant rdf:type owl:Class ;
+                      rdfs:subClassOf :Restaurant .
+
+
+###  http://example.org/kr25/restaurant#Fine_Dining_Restaurant
+:Fine_Dining_Restaurant rdf:type owl:Class ;
+                        rdfs:subClassOf :Restaurant .
+
+
+###  http://example.org/kr25/restaurant#Ingredient
+:Ingredient rdf:type owl:Class .
+
+
 ###  http://example.org/kr25/restaurant#Restaurant
 :Restaurant rdf:type owl:Class .
+
+
+###  http://example.org/kr25/restaurant#Seafood_Restaurant
+:Seafood_Restaurant rdf:type owl:Class ;
+                    rdfs:subClassOf :Restaurant .
 
 
 #################################################################
@@ -70,7 +140,14 @@
 
 ###  http://example.org/kr25/restaurant#Grand_Dining_Room
 :Grand_Dining_Room rdf:type owl:NamedIndividual ,
-                            :Restaurant .
+                            :Fine_Dining_Restaurant ,
+                            :Restaurant ;
+                   :hasCuisine :International ;
+                   :closesAt 2230 ;
+                   :hasName "Grand Dining Room" ;
+                   :hasPublicAccess "false"^^xsd:boolean ;
+                   :opensAt 1830 ;
+                   :petsAllowed "false"^^xsd:boolean .
 
 
 ###  http://example.org/kr25/restaurant#Greek
@@ -80,37 +157,103 @@
 
 ###  http://example.org/kr25/restaurant#Harbour_Grill
 :Harbour_Grill rdf:type owl:NamedIndividual ,
-                        :Restaurant ;
+                        :Restaurant ,
+                        :Seafood_Restaurant ;
                :hasCuisine :Greek ;
                :closesAt 2300 ;
                :hasName "Harbour Grill" ;
                :hasPublicAccess "true"^^xsd:boolean ;
-               :opensAt 1200 .
+               :opensAt 1200 ;
+               :petsAllowed "false"^^xsd:boolean .
+
+
+###  http://example.org/kr25/restaurant#Indian
+:Indian rdf:type owl:NamedIndividual ,
+                 :Cuisine .
+
+
+###  http://example.org/kr25/restaurant#International
+:International rdf:type owl:NamedIndividual ,
+                        :Cuisine .
+
+
+###  http://example.org/kr25/restaurant#Italian
+:Italian rdf:type owl:NamedIndividual ,
+                  :Cuisine .
 
 
 ###  http://example.org/kr25/restaurant#Kebab_Corner
 :Kebab_Corner rdf:type owl:NamedIndividual ,
-                       :Restaurant .
+                       :Fast_Food_Restaurant ,
+                       :Restaurant ;
+              :hasCuisine :Turkish ;
+              :closesAt 200 ;
+              :hasName "Kebab Corner" ;
+              :hasPublicAccess "true"^^xsd:boolean ;
+              :opensAt 1000 ;
+              :petsAllowed "true"^^xsd:boolean .
+
+
+###  http://example.org/kr25/restaurant#Lentil
+:Lentil rdf:type owl:NamedIndividual .
+
+
+###  http://example.org/kr25/restaurant#Lentil_Soup
+:Lentil_Soup rdf:type owl:NamedIndividual ,
+                      :Dish .
 
 
 ###  http://example.org/kr25/restaurant#Lobby_Cafe
 :Lobby_Cafe rdf:type owl:NamedIndividual ,
-                     :Restaurant .
+                     :Cafe ,
+                     :Restaurant ;
+            :hasCuisine :International ;
+            :closesAt 1900 ;
+            :hasName "Lobby Cafe" ;
+            :hasPublicAccess "true"^^xsd:boolean ;
+            :opensAt 700 ;
+            :petsAllowed "true"^^xsd:boolean .
 
 
 ###  http://example.org/kr25/restaurant#Morning_Buffet
 :Morning_Buffet rdf:type owl:NamedIndividual ,
-                         :Restaurant .
+                         :Buffet ,
+                         :Restaurant ;
+                :hasCuisine :International ;
+                :closesAt 1030 ;
+                :hasName "Morning Buffet" ;
+                :hasPublicAccess "false"^^xsd:boolean ;
+                :opensAt 630 ;
+                :petsAllowed "false"^^xsd:boolean .
 
 
 ###  http://example.org/kr25/restaurant#Spice_Garden
 :Spice_Garden rdf:type owl:NamedIndividual ,
-                       :Restaurant .
+                       :Casual_Restaurant ,
+                       :Restaurant ;
+              :hasCuisine :Indian ;
+              :closesAt 2200 ;
+              :hasName "Spice Garden" ;
+              :hasPublicAccess "true"^^xsd:boolean ;
+              :opensAt 1100 ;
+              :petsAllowed "true"^^xsd:boolean .
 
 
 ###  http://example.org/kr25/restaurant#Trattoria_Roma
 :Trattoria_Roma rdf:type owl:NamedIndividual ,
-                         :Restaurant .
+                         :Fine_Dining_Restaurant ,
+                         :Restaurant ;
+                :hasCuisine :Italian ;
+                :closesAt 2300 ;
+                :hasName "Trattoria Roma" ;
+                :hasPublicAccess "true"^^xsd:boolean ;
+                :opensAt 1800 ;
+                :petsAllowed "false"^^xsd:boolean .
+
+
+###  http://example.org/kr25/restaurant#Turkish
+:Turkish rdf:type owl:NamedIndividual ,
+                  :Cuisine .
 
 
 ###  Generated by the OWL API (version 4.5.29.2024-05-13T12:11:03Z) https://github.com/owlcs/owlapi
