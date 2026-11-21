@@ -1,1 +1,8 @@
 restaurant_id,name,restaurant_type,cuisine,public_access,pets_allowed,opens,closes,owner_gender,lgbtq_friendly
+r_harbour_grill,Harbour Grill,seafood,greek,true,false,12:00,23:00,female,
+r_kebab_corner,Kebab Corner,fast_food,turkish,true,true,10:00,02:00,male,
+r_trattoria_roma,Trattoria Roma,fine_dining,italian,true,false,18:00,23:00,male,
+r_spice_garden,Spice Garden,casual,indian,true,true,11:00,22:00,female,
+r_grand_dining,Grand Dining Room,fine_dining,international,false,false,18:30,22:30,female,
+r_morning_buffet,Morning Buffet,buffet,international,false,false,06:30,10:30,male,
+r_lobby_cafe,Lobby Cafe,cafe,international,true,true,07:00,19:00,female,
