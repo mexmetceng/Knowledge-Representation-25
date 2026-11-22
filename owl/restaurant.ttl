@@ -13,12 +13,19 @@
 #    Object Properties
 #################################################################
 
-###  http://example.org/kr25/restaurant#dietaryRestriction
-:dietaryRestriction rdf:type owl:ObjectProperty .
+###  http://example.org/kr25/restaurant#containsAllergen
+:containsAllergen rdf:type owl:ObjectProperty ;
+                  rdfs:domain :Dish ;
+                  rdfs:range :Allergen ;
+                  owl:propertyChainAxiom ( :hasIngredient
+                                           :hasAllergen
+                                         ) .
 
 
 ###  http://example.org/kr25/restaurant#hasAllergen
-:hasAllergen rdf:type owl:ObjectProperty .
+:hasAllergen rdf:type owl:ObjectProperty ;
+             rdfs:domain :Ingredient ;
+             rdfs:range :Allergen .
 
 
 ###  http://example.org/kr25/restaurant#hasCuisine
@@ -27,8 +34,59 @@
             rdfs:range :Cuisine .
 
 
+###  http://example.org/kr25/restaurant#hasIngredient
+:hasIngredient rdf:type owl:ObjectProperty ;
+               owl:inverseOf :ingredientOf ;
+               rdfs:domain :Dish ;
+               rdfs:range :Ingredient .
+
+
 ###  http://example.org/kr25/restaurant#ingredientCategory
-:ingredientCategory rdf:type owl:ObjectProperty .
+:ingredientCategory rdf:type owl:ObjectProperty ;
+                    rdfs:domain :Ingredient ;
+                    rdfs:range :IngredientCategory .
+
+
+###  http://example.org/kr25/restaurant#ingredientOf
+:ingredientOf rdf:type owl:ObjectProperty .
+
+
+###  http://example.org/kr25/restaurant#satisfiesDiet
+:satisfiesDiet rdf:type owl:ObjectProperty ;
+               rdfs:domain :Dish ;
+               rdfs:range :DietaryRestriction .
+
+
+###  http://example.org/kr25/restaurant#servedBy
+:servedBy rdf:type owl:ObjectProperty ;
+          owl:inverseOf :servesDish .
+
+
+###  http://example.org/kr25/restaurant#servesCheap
+:servesCheap rdf:type owl:ObjectProperty ;
+             rdfs:subPropertyOf :servesDish .
+
+
+###  http://example.org/kr25/restaurant#servesDish
+:servesDish rdf:type owl:ObjectProperty ;
+            rdfs:domain :Restaurant ;
+            rdfs:range :Dish .
+
+
+###  http://example.org/kr25/restaurant#servesExpensive
+:servesExpensive rdf:type owl:ObjectProperty ;
+                 rdfs:subPropertyOf :servesDish .
+
+
+###  http://example.org/kr25/restaurant#servesMedium
+:servesMedium rdf:type owl:ObjectProperty ;
+              rdfs:subPropertyOf :servesDish .
+
+
+###  http://example.org/kr25/restaurant#slaughterMethod
+:slaughterMethod rdf:type owl:ObjectProperty ;
+                 rdfs:domain :Ingredient ;
+                 rdfs:range :SlaughterMethod .
 
 
 #################################################################
@@ -42,15 +100,21 @@
 
 
 ###  http://example.org/kr25/restaurant#gramsOfCarbs
-:gramsOfCarbs rdf:type owl:DatatypeProperty .
+:gramsOfCarbs rdf:type owl:DatatypeProperty ;
+              rdfs:domain :Dish ;
+              rdfs:range xsd:integer .
 
 
 ###  http://example.org/kr25/restaurant#gramsOfFat
-:gramsOfFat rdf:type owl:DatatypeProperty .
+:gramsOfFat rdf:type owl:DatatypeProperty ;
+            rdfs:domain :Dish ;
+            rdfs:range xsd:integer .
 
 
 ###  http://example.org/kr25/restaurant#gramsOfProtein
-:gramsOfProtein rdf:type owl:DatatypeProperty .
+:gramsOfProtein rdf:type owl:DatatypeProperty ;
+                rdfs:domain :Dish ;
+                rdfs:range xsd:integer .
 
 
 ###  http://example.org/kr25/restaurant#hasName
@@ -64,10 +128,22 @@
                  rdfs:range xsd:boolean .
 
 
+###  http://example.org/kr25/restaurant#lgbtqFriendly
+:lgbtqFriendly rdf:type owl:DatatypeProperty ;
+               rdfs:domain :Restaurant ;
+               rdfs:range xsd:boolean .
+
+
 ###  http://example.org/kr25/restaurant#opensAt
 :opensAt rdf:type owl:DatatypeProperty ;
          rdfs:domain :Restaurant ;
          rdfs:range xsd:integer .
+
+
+###  http://example.org/kr25/restaurant#ownerGender
+:ownerGender rdf:type owl:DatatypeProperty ;
+             rdfs:domain :Restaurant ;
+             rdfs:range xsd:string .
 
 
 ###  http://example.org/kr25/restaurant#petsAllowed
@@ -82,6 +158,62 @@
 
 ###  http://example.org/kr25/restaurant#Allergen
 :Allergen rdf:type owl:Class .
+
+
+###  http://example.org/kr25/restaurant#AllergenContainingDish
+:AllergenContainingDish rdf:type owl:Class ;
+                        owl:equivalentClass [ owl:intersectionOf ( :Dish
+                                                                   [ rdf:type owl:Restriction ;
+                                                                     owl:onProperty :containsAllergen ;
+                                                                     owl:someValuesFrom :Allergen
+                                                                   ]
+                                                                 ) ;
+                                              rdf:type owl:Class
+                                            ] .
+
+
+###  http://example.org/kr25/restaurant#AllergenicIngredient
+:AllergenicIngredient rdf:type owl:Class ;
+                      owl:equivalentClass [ owl:intersectionOf ( :Ingredient
+                                                                 [ rdf:type owl:Restriction ;
+                                                                   owl:onProperty :hasAllergen ;
+                                                                   owl:someValuesFrom :Allergen
+                                                                 ]
+                                                               ) ;
+                                            rdf:type owl:Class
+                                          ] .
+
+
+###  http://example.org/kr25/restaurant#AnimalDerivedIngredient
+:AnimalDerivedIngredient rdf:type owl:Class ;
+                         owl:equivalentClass [ rdf:type owl:Class ;
+                                               owl:unionOf ( :DairyIngredient
+                                                             :EggIngredient
+                                                             :FishIngredient
+                                                             :MeatIngredient
+                                                             :ShellfishIngredient
+                                                             [ owl:intersectionOf ( :Ingredient
+                                                                                    [ rdf:type owl:Restriction ;
+                                                                                      owl:onProperty :ingredientCategory ;
+                                                                                      owl:hasValue :Honey_Category
+                                                                                    ]
+                                                                                  ) ;
+                                                               rdf:type owl:Class
+                                                             ]
+                                                           )
+                                             ] .
+
+
+###  http://example.org/kr25/restaurant#AnimalProductContainingDish
+:AnimalProductContainingDish rdf:type owl:Class ;
+                             owl:equivalentClass [ owl:intersectionOf ( :Dish
+                                                                        [ rdf:type owl:Restriction ;
+                                                                          owl:onProperty :hasIngredient ;
+                                                                          owl:someValuesFrom :AnimalDerivedIngredient
+                                                                        ]
+                                                                      ) ;
+                                                   rdf:type owl:Class
+                                                 ] .
 
 
 ###  http://example.org/kr25/restaurant#Buffet
@@ -103,12 +235,36 @@
 :Cuisine rdf:type owl:Class .
 
 
+###  http://example.org/kr25/restaurant#DairyIngredient
+:DairyIngredient rdf:type owl:Class ;
+                 owl:equivalentClass [ owl:intersectionOf ( :Ingredient
+                                                            [ rdf:type owl:Restriction ;
+                                                              owl:onProperty :ingredientCategory ;
+                                                              owl:hasValue :Dairy_Category
+                                                            ]
+                                                          ) ;
+                                       rdf:type owl:Class
+                                     ] .
+
+
 ###  http://example.org/kr25/restaurant#DietaryRestriction
 :DietaryRestriction rdf:type owl:Class .
 
 
 ###  http://example.org/kr25/restaurant#Dish
 :Dish rdf:type owl:Class .
+
+
+###  http://example.org/kr25/restaurant#EggIngredient
+:EggIngredient rdf:type owl:Class ;
+               owl:equivalentClass [ owl:intersectionOf ( :Ingredient
+                                                          [ rdf:type owl:Restriction ;
+                                                            owl:onProperty :ingredientCategory ;
+                                                            owl:hasValue :Egg_Category
+                                                          ]
+                                                        ) ;
+                                     rdf:type owl:Class
+                                   ] .
 
 
 ###  http://example.org/kr25/restaurant#Fast_Food_Restaurant
@@ -121,12 +277,266 @@
                         rdfs:subClassOf :Restaurant .
 
 
+###  http://example.org/kr25/restaurant#FishIngredient
+:FishIngredient rdf:type owl:Class ;
+                owl:equivalentClass [ owl:intersectionOf ( :Ingredient
+                                                           [ rdf:type owl:Restriction ;
+                                                             owl:onProperty :ingredientCategory ;
+                                                             owl:hasValue :Fish_Category
+                                                           ]
+                                                         ) ;
+                                      rdf:type owl:Class
+                                    ] .
+
+
+###  http://example.org/kr25/restaurant#FishOrShellfishDish
+:FishOrShellfishDish rdf:type owl:Class ;
+                     owl:equivalentClass [ owl:intersectionOf ( :Dish
+                                                                [ rdf:type owl:Restriction ;
+                                                                  owl:onProperty :hasIngredient ;
+                                                                  owl:someValuesFrom [ rdf:type owl:Class ;
+                                                                                       owl:unionOf ( :FishIngredient
+                                                                                                     :ShellfishIngredient
+                                                                                                   )
+                                                                                     ]
+                                                                ]
+                                                              ) ;
+                                           rdf:type owl:Class
+                                         ] .
+
+
+###  http://example.org/kr25/restaurant#GlutenContainingDish
+:GlutenContainingDish rdf:type owl:Class ;
+                      owl:equivalentClass [ owl:intersectionOf ( :Dish
+                                                                 [ rdf:type owl:Restriction ;
+                                                                   owl:onProperty :containsAllergen ;
+                                                                   owl:hasValue :Gluten_Allergen
+                                                                 ]
+                                                               ) ;
+                                            rdf:type owl:Class
+                                          ] .
+
+
+###  http://example.org/kr25/restaurant#HalalSlaughterIngredient
+:HalalSlaughterIngredient rdf:type owl:Class ;
+                          owl:equivalentClass [ owl:intersectionOf ( :Ingredient
+                                                                     [ rdf:type owl:Restriction ;
+                                                                       owl:onProperty :slaughterMethod ;
+                                                                       owl:hasValue :Halal_Slaughter
+                                                                     ]
+                                                                   ) ;
+                                                rdf:type owl:Class
+                                              ] .
+
+
+###  http://example.org/kr25/restaurant#HalalSuitableDish
+:HalalSuitableDish rdf:type owl:Class ;
+                   owl:equivalentClass [ owl:intersectionOf ( :Dish
+                                                              [ rdf:type owl:Restriction ;
+                                                                owl:onProperty :satisfiesDiet ;
+                                                                owl:hasValue :Halal
+                                                              ]
+                                                            ) ;
+                                         rdf:type owl:Class
+                                       ] .
+
+
+###  http://example.org/kr25/restaurant#HighProteinDish
+:HighProteinDish rdf:type owl:Class ;
+                 owl:equivalentClass [ owl:intersectionOf ( :Dish
+                                                            [ rdf:type owl:Restriction ;
+                                                              owl:onProperty :gramsOfProtein ;
+                                                              owl:someValuesFrom [ rdf:type rdfs:Datatype ;
+                                                                                   owl:onDatatype xsd:integer ;
+                                                                                   owl:withRestrictions ( [ xsd:minInclusive 30
+                                                                                                          ]
+                                                                                                        )
+                                                                                 ]
+                                                            ]
+                                                          ) ;
+                                       rdf:type owl:Class
+                                     ] .
+
+
 ###  http://example.org/kr25/restaurant#Ingredient
 :Ingredient rdf:type owl:Class .
 
 
+###  http://example.org/kr25/restaurant#IngredientCategory
+:IngredientCategory rdf:type owl:Class .
+
+
+###  http://example.org/kr25/restaurant#KosherSlaughterIngredient
+:KosherSlaughterIngredient rdf:type owl:Class ;
+                           owl:equivalentClass [ owl:intersectionOf ( :Ingredient
+                                                                      [ rdf:type owl:Restriction ;
+                                                                        owl:onProperty :slaughterMethod ;
+                                                                        owl:hasValue :Kosher_Slaughter
+                                                                      ]
+                                                                    ) ;
+                                                 rdf:type owl:Class
+                                               ] .
+
+
+###  http://example.org/kr25/restaurant#LowCarbDish
+:LowCarbDish rdf:type owl:Class ;
+             owl:equivalentClass [ owl:intersectionOf ( :Dish
+                                                        [ rdf:type owl:Restriction ;
+                                                          owl:onProperty :gramsOfCarbs ;
+                                                          owl:someValuesFrom [ rdf:type rdfs:Datatype ;
+                                                                               owl:onDatatype xsd:integer ;
+                                                                               owl:withRestrictions ( [ xsd:maxInclusive 10
+                                                                                                      ]
+                                                                                                    )
+                                                                             ]
+                                                        ]
+                                                      ) ;
+                                   rdf:type owl:Class
+                                 ] .
+
+
+###  http://example.org/kr25/restaurant#MeatContainingDish
+:MeatContainingDish rdf:type owl:Class ;
+                    owl:equivalentClass [ owl:intersectionOf ( :Dish
+                                                               [ rdf:type owl:Restriction ;
+                                                                 owl:onProperty :hasIngredient ;
+                                                                 owl:someValuesFrom :MeatIngredient
+                                                               ]
+                                                             ) ;
+                                          rdf:type owl:Class
+                                        ] .
+
+
+###  http://example.org/kr25/restaurant#MeatIngredient
+:MeatIngredient rdf:type owl:Class ;
+                owl:equivalentClass [ owl:intersectionOf ( :Ingredient
+                                                           [ rdf:type owl:Restriction ;
+                                                             owl:onProperty :ingredientCategory ;
+                                                             owl:someValuesFrom [ rdf:type owl:Class ;
+                                                                                  owl:oneOf ( :Beef_Category
+                                                                                              :Lamb_Category
+                                                                                              :Pork_Category
+                                                                                              :Poultry_Category
+                                                                                            )
+                                                                                ]
+                                                           ]
+                                                         ) ;
+                                      rdf:type owl:Class
+                                    ] ;
+                owl:disjointWith :PlantIngredient .
+
+
+###  http://example.org/kr25/restaurant#MilkAllergenContainingDish
+:MilkAllergenContainingDish rdf:type owl:Class ;
+                            owl:equivalentClass [ owl:intersectionOf ( :Dish
+                                                                       [ rdf:type owl:Restriction ;
+                                                                         owl:onProperty :containsAllergen ;
+                                                                         owl:hasValue :Milk_Allergen
+                                                                       ]
+                                                                     ) ;
+                                                  rdf:type owl:Class
+                                                ] .
+
+
+###  http://example.org/kr25/restaurant#OnlyPlantIngredientsDish
+:OnlyPlantIngredientsDish rdf:type owl:Class ;
+                          owl:equivalentClass [ owl:intersectionOf ( :Dish
+                                                                     [ rdf:type owl:Restriction ;
+                                                                       owl:onProperty :hasIngredient ;
+                                                                       owl:allValuesFrom :PlantIngredient
+                                                                     ]
+                                                                   ) ;
+                                                rdf:type owl:Class
+                                              ] .
+
+
+###  http://example.org/kr25/restaurant#PeanutContainingDish
+:PeanutContainingDish rdf:type owl:Class ;
+                      owl:equivalentClass [ owl:intersectionOf ( :Dish
+                                                                 [ rdf:type owl:Restriction ;
+                                                                   owl:onProperty :containsAllergen ;
+                                                                   owl:hasValue :Peanuts_Allergen
+                                                                 ]
+                                                               ) ;
+                                            rdf:type owl:Class
+                                          ] .
+
+
+###  http://example.org/kr25/restaurant#PetFriendlyRestaurant
+:PetFriendlyRestaurant rdf:type owl:Class ;
+                       owl:equivalentClass [ owl:intersectionOf ( :Restaurant
+                                                                  [ rdf:type owl:Restriction ;
+                                                                    owl:onProperty :petsAllowed ;
+                                                                    owl:hasValue "true"^^xsd:boolean
+                                                                  ]
+                                                                ) ;
+                                             rdf:type owl:Class
+                                           ] .
+
+
+###  http://example.org/kr25/restaurant#PlantIngredient
+:PlantIngredient rdf:type owl:Class ;
+                 owl:equivalentClass [ owl:intersectionOf ( :Ingredient
+                                                            [ rdf:type owl:Restriction ;
+                                                              owl:onProperty :ingredientCategory ;
+                                                              owl:hasValue :Plant_Category
+                                                            ]
+                                                          ) ;
+                                       rdf:type owl:Class
+                                     ] .
+
+
+###  http://example.org/kr25/restaurant#PublicRestaurant
+:PublicRestaurant rdf:type owl:Class ;
+                  owl:equivalentClass [ owl:intersectionOf ( :Restaurant
+                                                             [ rdf:type owl:Restriction ;
+                                                               owl:onProperty :hasPublicAccess ;
+                                                               owl:hasValue "true"^^xsd:boolean
+                                                             ]
+                                                           ) ;
+                                        rdf:type owl:Class
+                                      ] .
+
+
 ###  http://example.org/kr25/restaurant#Restaurant
 :Restaurant rdf:type owl:Class .
+
+
+###  http://example.org/kr25/restaurant#RestaurantServingHighProteinDish
+:RestaurantServingHighProteinDish rdf:type owl:Class ;
+                                  owl:equivalentClass [ owl:intersectionOf ( :Restaurant
+                                                                             [ rdf:type owl:Restriction ;
+                                                                               owl:onProperty :servesDish ;
+                                                                               owl:someValuesFrom :HighProteinDish
+                                                                             ]
+                                                                           ) ;
+                                                        rdf:type owl:Class
+                                                      ] .
+
+
+###  http://example.org/kr25/restaurant#RestaurantServingVeganDish
+:RestaurantServingVeganDish rdf:type owl:Class ;
+                            owl:equivalentClass [ owl:intersectionOf ( :Restaurant
+                                                                       [ rdf:type owl:Restriction ;
+                                                                         owl:onProperty :servesDish ;
+                                                                         owl:someValuesFrom :VeganSuitableDish
+                                                                       ]
+                                                                     ) ;
+                                                  rdf:type owl:Class
+                                                ] .
+
+
+###  http://example.org/kr25/restaurant#RestaurantWithMultipleDishes
+:RestaurantWithMultipleDishes rdf:type owl:Class ;
+                              owl:equivalentClass [ owl:intersectionOf ( :Restaurant
+                                                                         [ rdf:type owl:Restriction ;
+                                                                           owl:onProperty :servesDish ;
+                                                                           owl:minQualifiedCardinality "2"^^xsd:nonNegativeInteger ;
+                                                                           owl:onClass :Dish
+                                                                         ]
+                                                                       ) ;
+                                                    rdf:type owl:Class
+                                                  ] .
 
 
 ###  http://example.org/kr25/restaurant#Seafood_Restaurant
@@ -134,19 +544,286 @@
                     rdfs:subClassOf :Restaurant .
 
 
+###  http://example.org/kr25/restaurant#ShellfishIngredient
+:ShellfishIngredient rdf:type owl:Class ;
+                     owl:equivalentClass [ owl:intersectionOf ( :Ingredient
+                                                                [ rdf:type owl:Restriction ;
+                                                                  owl:onProperty :ingredientCategory ;
+                                                                  owl:hasValue :Shellfish_Category
+                                                                ]
+                                                              ) ;
+                                           rdf:type owl:Class
+                                         ] .
+
+
+###  http://example.org/kr25/restaurant#SlaughterMethod
+:SlaughterMethod rdf:type owl:Class .
+
+
+###  http://example.org/kr25/restaurant#VeganSuitableDish
+:VeganSuitableDish rdf:type owl:Class ;
+                   owl:equivalentClass [ owl:intersectionOf ( :Dish
+                                                              [ rdf:type owl:Restriction ;
+                                                                owl:onProperty :satisfiesDiet ;
+                                                                owl:hasValue :Vegan
+                                                              ]
+                                                            ) ;
+                                         rdf:type owl:Class
+                                       ] .
+
+
+###  http://example.org/kr25/restaurant#VegetarianSuitableDish
+:VegetarianSuitableDish rdf:type owl:Class ;
+                        owl:equivalentClass [ owl:intersectionOf ( :Dish
+                                                                   [ rdf:type owl:Restriction ;
+                                                                     owl:onProperty :satisfiesDiet ;
+                                                                     owl:hasValue :Vegetarian
+                                                                   ]
+                                                                 ) ;
+                                              rdf:type owl:Class
+                                            ] .
+
+
 #################################################################
 #    Individuals
 #################################################################
+
+###  http://example.org/kr25/restaurant#Alcohol_Category
+:Alcohol_Category rdf:type owl:NamedIndividual ,
+                           :IngredientCategory ;
+                  :hasName "alcohol" .
+
+
+###  http://example.org/kr25/restaurant#Bacon
+:Bacon rdf:type owl:NamedIndividual ,
+                :Ingredient ;
+       :ingredientCategory :Pork_Category ;
+       :hasName "Bacon" .
+
+
+###  http://example.org/kr25/restaurant#Beef
+:Beef rdf:type owl:NamedIndividual ,
+               :Ingredient ;
+      :ingredientCategory :Beef_Category ;
+      :hasName "Beef" .
+
+
+###  http://example.org/kr25/restaurant#Beef_Burger
+:Beef_Burger rdf:type owl:NamedIndividual ,
+                      :Dish ;
+             :hasIngredient :Beef ,
+                            :Cheese ,
+                            :Tomato ;
+             :gramsOfCarbs 40 ;
+             :gramsOfFat 28 ;
+             :gramsOfProtein 30 ;
+             :hasName "Beef Burger" .
+
+
+###  http://example.org/kr25/restaurant#Beef_Category
+:Beef_Category rdf:type owl:NamedIndividual ,
+                        :IngredientCategory ;
+               :hasName "beef" .
+
+
+###  http://example.org/kr25/restaurant#Beef_Halal
+:Beef_Halal rdf:type owl:NamedIndividual ,
+                     :Ingredient ;
+            :ingredientCategory :Beef_Category ;
+            :slaughterMethod :Halal_Slaughter ;
+            :hasName "Beef (halal)" .
+
+
+###  http://example.org/kr25/restaurant#Beef_Stew
+:Beef_Stew rdf:type owl:NamedIndividual ,
+                    :Dish ;
+           :hasIngredient :Beef_Halal ,
+                          :Carrot ,
+                          :Red_Wine ,
+                          :Tomato ;
+           :gramsOfCarbs 18 ;
+           :gramsOfFat 15 ;
+           :gramsOfProtein 30 ;
+           :hasName "Beef Stew" .
+
+
+###  http://example.org/kr25/restaurant#Broccoli
+:Broccoli rdf:type owl:NamedIndividual ,
+                   :Ingredient ;
+          :ingredientCategory :Plant_Category ;
+          :hasName "Broccoli" .
+
+
+###  http://example.org/kr25/restaurant#Butter
+:Butter rdf:type owl:NamedIndividual ,
+                 :Ingredient ;
+        :hasAllergen :Milk_Allergen ;
+        :ingredientCategory :Dairy_Category ;
+        :hasName "Butter" .
+
+
+###  http://example.org/kr25/restaurant#Carbonara
+:Carbonara rdf:type owl:NamedIndividual ,
+                    :Dish ;
+           :hasIngredient :Bacon ,
+                          :Cheese ,
+                          :Egg ,
+                          :Wheat_Flour ;
+           :gramsOfCarbs 55 ;
+           :gramsOfFat 30 ;
+           :gramsOfProtein 25 ;
+           :hasName "Carbonara" .
+
+
+###  http://example.org/kr25/restaurant#Carrot
+:Carrot rdf:type owl:NamedIndividual ,
+                 :Ingredient ;
+        :ingredientCategory :Plant_Category ;
+        :hasName "Carrot" .
+
+
+###  http://example.org/kr25/restaurant#Celery
+:Celery rdf:type owl:NamedIndividual ,
+                 :Ingredient ;
+        :hasAllergen :Celery_Allergen ;
+        :ingredientCategory :Plant_Category ;
+        :hasName "Celery" .
+
+
+###  http://example.org/kr25/restaurant#Celery_Allergen
+:Celery_Allergen rdf:type owl:NamedIndividual ,
+                          :Allergen ;
+                 :hasName "celery" .
+
+
+###  http://example.org/kr25/restaurant#Cheese
+:Cheese rdf:type owl:NamedIndividual ,
+                 :Ingredient ;
+        :hasAllergen :Milk_Allergen ;
+        :ingredientCategory :Dairy_Category ;
+        :hasName "Cheese" .
+
+
+###  http://example.org/kr25/restaurant#Cheese_Omelette
+:Cheese_Omelette rdf:type owl:NamedIndividual ,
+                          :Dish ;
+                 :hasIngredient :Butter ,
+                                :Cheese ,
+                                :Egg ;
+                 :satisfiesDiet :Halal ,
+                                :Kosher ,
+                                :Pescatarian ,
+                                :Vegetarian ;
+                 :gramsOfCarbs 2 ;
+                 :gramsOfFat 28 ;
+                 :gramsOfProtein 22 ;
+                 :hasName "Cheese Omelette" .
+
+
+###  http://example.org/kr25/restaurant#Chicken_Halal
+:Chicken_Halal rdf:type owl:NamedIndividual ,
+                        :Ingredient ;
+               :ingredientCategory :Poultry_Category ;
+               :slaughterMethod :Halal_Slaughter ;
+               :hasName "Chicken (halal)" .
+
+
+###  http://example.org/kr25/restaurant#Chicken_Kosher
+:Chicken_Kosher rdf:type owl:NamedIndividual ,
+                         :Ingredient ;
+                :ingredientCategory :Poultry_Category ;
+                :slaughterMethod :Kosher_Slaughter ;
+                :hasName "Chicken (kosher)" .
+
+
+###  http://example.org/kr25/restaurant#Chickpea_Curry
+:Chickpea_Curry rdf:type owl:NamedIndividual ,
+                         :Dish ;
+                :hasIngredient :Chickpeas ,
+                               :Olive_Oil ,
+                               :Rice ,
+                               :Tomato ;
+                :satisfiesDiet :Halal ,
+                               :Kosher ,
+                               :Pescatarian ,
+                               :Vegan ,
+                               :Vegetarian ;
+                :gramsOfCarbs 55 ;
+                :gramsOfFat 9 ;
+                :gramsOfProtein 14 ;
+                :hasName "Chickpea Curry" .
+
+
+###  http://example.org/kr25/restaurant#Chickpeas
+:Chickpeas rdf:type owl:NamedIndividual ,
+                    :Ingredient ;
+           :ingredientCategory :Plant_Category ;
+           :hasName "Chickpeas" .
+
+
+###  http://example.org/kr25/restaurant#Crustaceans_Allergen
+:Crustaceans_Allergen rdf:type owl:NamedIndividual ,
+                               :Allergen ;
+                      :hasName "crustaceans" .
+
+
+###  http://example.org/kr25/restaurant#Dairy_Category
+:Dairy_Category rdf:type owl:NamedIndividual ,
+                         :IngredientCategory ;
+                :hasName "dairy" .
+
+
+###  http://example.org/kr25/restaurant#Egg
+:Egg rdf:type owl:NamedIndividual ,
+              :Ingredient ;
+     :hasAllergen :Egg_Allergen ;
+     :ingredientCategory :Egg_Category ;
+     :hasName "Egg" .
+
+
+###  http://example.org/kr25/restaurant#Egg_Allergen
+:Egg_Allergen rdf:type owl:NamedIndividual ,
+                       :Allergen ;
+              :hasName "egg" .
+
+
+###  http://example.org/kr25/restaurant#Egg_Category
+:Egg_Category rdf:type owl:NamedIndividual ,
+                       :IngredientCategory ;
+              :hasName "egg" .
+
+
+###  http://example.org/kr25/restaurant#Fish_Allergen
+:Fish_Allergen rdf:type owl:NamedIndividual ,
+                        :Allergen ;
+               :hasName "fish" .
+
+
+###  http://example.org/kr25/restaurant#Fish_Category
+:Fish_Category rdf:type owl:NamedIndividual ,
+                        :IngredientCategory ;
+               :hasName "fish" .
+
+
+###  http://example.org/kr25/restaurant#Gluten_Allergen
+:Gluten_Allergen rdf:type owl:NamedIndividual ,
+                          :Allergen ;
+                 :hasName "gluten" .
+
 
 ###  http://example.org/kr25/restaurant#Grand_Dining_Room
 :Grand_Dining_Room rdf:type owl:NamedIndividual ,
                             :Fine_Dining_Restaurant ,
                             :Restaurant ;
                    :hasCuisine :International ;
+                   :servesExpensive :Beef_Stew ,
+                                    :Grilled_Chicken ,
+                                    :Kosher_Chicken_Plate ;
                    :closesAt 2230 ;
                    :hasName "Grand Dining Room" ;
                    :hasPublicAccess "false"^^xsd:boolean ;
                    :opensAt 1830 ;
+                   :ownerGender "female" ;
                    :petsAllowed "false"^^xsd:boolean .
 
 
@@ -155,16 +832,92 @@
                 :Cuisine .
 
 
+###  http://example.org/kr25/restaurant#Grilled_Chicken
+:Grilled_Chicken rdf:type owl:NamedIndividual ,
+                          :Dish ;
+                 :hasIngredient :Broccoli ,
+                                :Chicken_Halal ,
+                                :Olive_Oil ,
+                                :Rice ;
+                 :satisfiesDiet :Halal ;
+                 :gramsOfCarbs 45 ;
+                 :gramsOfFat 10 ;
+                 :gramsOfProtein 38 ;
+                 :hasName "Grilled Chicken" .
+
+
+###  http://example.org/kr25/restaurant#Grilled_Salmon
+:Grilled_Salmon rdf:type owl:NamedIndividual ,
+                         :Dish ;
+                :hasIngredient :Broccoli ,
+                               :Olive_Oil ,
+                               :Salmon ;
+                :satisfiesDiet :Halal ,
+                               :Kosher ,
+                               :Pescatarian ;
+                :gramsOfCarbs 5 ;
+                :gramsOfFat 22 ;
+                :gramsOfProtein 34 ;
+                :hasName "Grilled Salmon" .
+
+
+###  http://example.org/kr25/restaurant#Halal
+:Halal rdf:type owl:NamedIndividual ,
+                :DietaryRestriction ;
+       :hasName "halal" .
+
+
+###  http://example.org/kr25/restaurant#Halal_Slaughter
+:Halal_Slaughter rdf:type owl:NamedIndividual ,
+                          :SlaughterMethod ;
+                 :hasName "halal" .
+
+
 ###  http://example.org/kr25/restaurant#Harbour_Grill
 :Harbour_Grill rdf:type owl:NamedIndividual ,
                         :Restaurant ,
                         :Seafood_Restaurant ;
                :hasCuisine :Greek ;
+               :servesExpensive :Grilled_Salmon ;
+               :servesMedium :Mussels_In_Wine ,
+                             :Shrimp_Rice ;
                :closesAt 2300 ;
                :hasName "Harbour Grill" ;
                :hasPublicAccess "true"^^xsd:boolean ;
                :opensAt 1200 ;
+               :ownerGender "female" ;
                :petsAllowed "false"^^xsd:boolean .
+
+
+###  http://example.org/kr25/restaurant#Honey
+:Honey rdf:type owl:NamedIndividual ,
+                :Ingredient ;
+       :ingredientCategory :Honey_Category ;
+       :hasName "Honey" .
+
+
+###  http://example.org/kr25/restaurant#Honey_Category
+:Honey_Category rdf:type owl:NamedIndividual ,
+                         :IngredientCategory ;
+                :hasName "honey" .
+
+
+###  http://example.org/kr25/restaurant#Honey_Walnut_Cake
+:Honey_Walnut_Cake rdf:type owl:NamedIndividual ,
+                            :Dish ;
+                   :hasIngredient :Butter ,
+                                  :Egg ,
+                                  :Honey ,
+                                  :Walnuts ,
+                                  :Wheat_Flour ;
+                   :satisfiesDiet :Halal ,
+                                  :Kosher ,
+                                  :Pescatarian ,
+                                  :Vegetarian ;
+                   :gramsOfCarbs 55 ;
+                   :gramsOfFat 24 ;
+                   :gramsOfProtein 8 ;
+                   :hasName "Honey Walnut Cake" .
 
 
 ###  http://example.org/kr25/restaurant#Indian
@@ -187,20 +940,92 @@
                        :Fast_Food_Restaurant ,
                        :Restaurant ;
               :hasCuisine :Turkish ;
+              :servesCheap :Beef_Burger ,
+                           :Chickpea_Curry ,
+                           :Lamb_Kebab ;
               :closesAt 200 ;
               :hasName "Kebab Corner" ;
               :hasPublicAccess "true"^^xsd:boolean ;
               :opensAt 1000 ;
+              :ownerGender "male" ;
               :petsAllowed "true"^^xsd:boolean .
 
 
-###  http://example.org/kr25/restaurant#Lentil
-:Lentil rdf:type owl:NamedIndividual .
+###  http://example.org/kr25/restaurant#Kosher
+:Kosher rdf:type owl:NamedIndividual ,
+                 :DietaryRestriction ;
+        :hasName "kosher" .
+
+
+###  http://example.org/kr25/restaurant#Kosher_Chicken_Plate
+:Kosher_Chicken_Plate rdf:type owl:NamedIndividual ,
+                               :Dish ;
+                      :hasIngredient :Carrot ,
+                                     :Chicken_Kosher ,
+                                     :Rice ;
+                      :satisfiesDiet :Kosher ;
+                      :gramsOfCarbs 40 ;
+                      :gramsOfFat 9 ;
+                      :gramsOfProtein 36 ;
+                      :hasName "Kosher Chicken Plate" .
+
+
+###  http://example.org/kr25/restaurant#Kosher_Slaughter
+:Kosher_Slaughter rdf:type owl:NamedIndividual ,
+                           :SlaughterMethod ;
+                  :hasName "kosher" .
+
+
+###  http://example.org/kr25/restaurant#Lamb_Category
+:Lamb_Category rdf:type owl:NamedIndividual ,
+                        :IngredientCategory ;
+               :hasName "lamb" .
+
+
+###  http://example.org/kr25/restaurant#Lamb_Halal
+:Lamb_Halal rdf:type owl:NamedIndividual ,
+                     :Ingredient ;
+            :ingredientCategory :Lamb_Category ;
+            :slaughterMethod :Halal_Slaughter ;
+            :hasName "Lamb (halal)" .
+
+
+###  http://example.org/kr25/restaurant#Lamb_Kebab
+:Lamb_Kebab rdf:type owl:NamedIndividual ,
+                     :Dish ;
+            :hasIngredient :Lamb_Halal ,
+                           :Tomato ,
+                           :Wheat_Flour ;
+            :satisfiesDiet :Halal ;
+            :gramsOfCarbs 35 ;
+            :gramsOfFat 22 ;
+            :gramsOfProtein 32 ;
+            :hasName "Lamb Kebab" .
 
 
 ###  http://example.org/kr25/restaurant#Lentil_Soup
 :Lentil_Soup rdf:type owl:NamedIndividual ,
-                      :Dish .
+                      :Dish ;
+             :hasIngredient :Carrot ,
+                            :Lentils ,
+                            :Olive_Oil ,
+                            :Tomato ;
+             :satisfiesDiet :Halal ,
+                            :Kosher ,
+                            :Pescatarian ,
+                            :Vegan ,
+                            :Vegetarian ;
+             :gramsOfCarbs 30 ;
+             :gramsOfFat 5 ;
+             :gramsOfProtein 12 ;
+             :hasName "Lentil Soup" .
+
+
+###  http://example.org/kr25/restaurant#Lentils
+:Lentils rdf:type owl:NamedIndividual ,
+                  :Ingredient ;
+         :ingredientCategory :Plant_Category ;
+         :hasName "Lentils" .
 
 
 ###  http://example.org/kr25/restaurant#Lobby_Cafe
@@ -208,11 +1033,53 @@
                      :Cafe ,
                      :Restaurant ;
             :hasCuisine :International ;
+            :servesMedium :Cheese_Omelette ,
+                          :Grilled_Chicken ,
+                          :Honey_Walnut_Cake ,
+                          :Margherita_Pizza ;
             :closesAt 1900 ;
             :hasName "Lobby Cafe" ;
             :hasPublicAccess "true"^^xsd:boolean ;
             :opensAt 700 ;
+            :ownerGender "female" ;
             :petsAllowed "true"^^xsd:boolean .
+
+
+###  http://example.org/kr25/restaurant#Margherita_Pizza
+:Margherita_Pizza rdf:type owl:NamedIndividual ,
+                           :Dish ;
+                  :hasIngredient :Cheese ,
+                                 :Olive_Oil ,
+                                 :Tomato ,
+                                 :Wheat_Flour ;
+                  :satisfiesDiet :Halal ,
+                                 :Kosher ,
+                                 :Pescatarian ,
+                                 :Vegetarian ;
+                  :gramsOfCarbs 60 ;
+                  :gramsOfFat 14 ;
+                  :gramsOfProtein 18 ;
+                  :hasName "Margherita Pizza" .
+
+
+###  http://example.org/kr25/restaurant#Milk
+:Milk rdf:type owl:NamedIndividual ,
+               :Ingredient ;
+      :hasAllergen :Milk_Allergen ;
+      :ingredientCategory :Dairy_Category ;
+      :hasName "Milk" .
+
+
+###  http://example.org/kr25/restaurant#Milk_Allergen
+:Milk_Allergen rdf:type owl:NamedIndividual ,
+                        :Allergen ;
+               :hasName "milk" .
+
+
+###  http://example.org/kr25/restaurant#Molluscs_Allergen
+:Molluscs_Allergen rdf:type owl:NamedIndividual ,
+                            :Allergen ;
+                   :hasName "molluscs" .
 
 
 ###  http://example.org/kr25/restaurant#Morning_Buffet
@@ -220,11 +1087,196 @@
                          :Buffet ,
                          :Restaurant ;
                 :hasCuisine :International ;
+                :servesCheap :Cheese_Omelette ,
+                             :Honey_Walnut_Cake ,
+                             :Lentil_Soup ;
                 :closesAt 1030 ;
                 :hasName "Morning Buffet" ;
                 :hasPublicAccess "false"^^xsd:boolean ;
                 :opensAt 630 ;
+                :ownerGender "male" ;
                 :petsAllowed "false"^^xsd:boolean .
+
+
+###  http://example.org/kr25/restaurant#Mussels
+:Mussels rdf:type owl:NamedIndividual ,
+                  :Ingredient ;
+         :hasAllergen :Molluscs_Allergen ;
+         :ingredientCategory :Shellfish_Category ;
+         :hasName "Mussels" .
+
+
+###  http://example.org/kr25/restaurant#Mussels_In_Wine
+:Mussels_In_Wine rdf:type owl:NamedIndividual ,
+                          :Dish ;
+                 :hasIngredient :Celery ,
+                                :Mussels ,
+                                :Red_Wine ;
+                 :satisfiesDiet :Pescatarian ;
+                 :gramsOfCarbs 8 ;
+                 :gramsOfFat 14 ;
+                 :gramsOfProtein 24 ;
+                 :hasName "Mussels in Wine" .
+
+
+###  http://example.org/kr25/restaurant#Mustard
+:Mustard rdf:type owl:NamedIndividual ,
+                  :Ingredient ;
+         :hasAllergen :Mustard_Allergen ;
+         :ingredientCategory :Plant_Category ;
+         :hasName "Mustard" .
+
+
+###  http://example.org/kr25/restaurant#Mustard_Allergen
+:Mustard_Allergen rdf:type owl:NamedIndividual ,
+                           :Allergen ;
+                  :hasName "mustard" .
+
+
+###  http://example.org/kr25/restaurant#Nuts_Allergen
+:Nuts_Allergen rdf:type owl:NamedIndividual ,
+                        :Allergen ;
+               :hasName "nuts" .
+
+
+###  http://example.org/kr25/restaurant#Olive_Oil
+:Olive_Oil rdf:type owl:NamedIndividual ,
+                    :Ingredient ;
+           :ingredientCategory :Plant_Category ;
+           :hasName "Olive oil" .
+
+
+###  http://example.org/kr25/restaurant#Peanut_Noodles
+:Peanut_Noodles rdf:type owl:NamedIndividual ,
+                         :Dish ;
+                :hasIngredient :Peanuts ,
+                               :Sesame_Seeds ,
+                               :Wheat_Flour ;
+                :satisfiesDiet :Halal ,
+                               :Kosher ,
+                               :Pescatarian ,
+                               :Vegan ,
+                               :Vegetarian ;
+                :gramsOfCarbs 65 ;
+                :gramsOfFat 16 ;
+                :gramsOfProtein 14 ;
+                :hasName "Peanut Noodles" .
+
+
+###  http://example.org/kr25/restaurant#Peanuts
+:Peanuts rdf:type owl:NamedIndividual ,
+                  :Ingredient ;
+         :hasAllergen :Peanuts_Allergen ;
+         :ingredientCategory :Plant_Category ;
+         :hasName "Peanuts" .
+
+
+###  http://example.org/kr25/restaurant#Peanuts_Allergen
+:Peanuts_Allergen rdf:type owl:NamedIndividual ,
+                           :Allergen ;
+                  :hasName "peanuts" .
+
+
+###  http://example.org/kr25/restaurant#Pescatarian
+:Pescatarian rdf:type owl:NamedIndividual ,
+                      :DietaryRestriction ;
+             :hasName "pescatarian" .
+
+
+###  http://example.org/kr25/restaurant#Plant_Category
+:Plant_Category rdf:type owl:NamedIndividual ,
+                         :IngredientCategory ;
+                :hasName "plant" .
+
+
+###  http://example.org/kr25/restaurant#Pork
+:Pork rdf:type owl:NamedIndividual ,
+               :Ingredient ;
+      :ingredientCategory :Pork_Category ;
+      :hasName "Pork" .
+
+
+###  http://example.org/kr25/restaurant#Pork_Category
+:Pork_Category rdf:type owl:NamedIndividual ,
+                        :IngredientCategory ;
+               :hasName "pork" .
+
+
+###  http://example.org/kr25/restaurant#Poultry_Category
+:Poultry_Category rdf:type owl:NamedIndividual ,
+                           :IngredientCategory ;
+                  :hasName "poultry" .
+
+
+###  http://example.org/kr25/restaurant#Red_Wine
+:Red_Wine rdf:type owl:NamedIndividual ,
+                   :Ingredient ;
+          :hasAllergen :Sulphites_Allergen ;
+          :ingredientCategory :Alcohol_Category ;
+          :hasName "Red Wine" .
+
+
+###  http://example.org/kr25/restaurant#Rice
+:Rice rdf:type owl:NamedIndividual ,
+               :Ingredient ;
+      :ingredientCategory :Plant_Category ;
+      :hasName "Rice" .
+
+
+###  http://example.org/kr25/restaurant#Salmon
+:Salmon rdf:type owl:NamedIndividual ,
+                 :Ingredient ;
+        :hasAllergen :Fish_Allergen ;
+        :ingredientCategory :Fish_Category ;
+        :hasName "Salmon" .
+
+
+###  http://example.org/kr25/restaurant#Sesame_Allergen
+:Sesame_Allergen rdf:type owl:NamedIndividual ,
+                          :Allergen ;
+                 :hasName "sesame" .
+
+
+###  http://example.org/kr25/restaurant#Sesame_Seeds
+:Sesame_Seeds rdf:type owl:NamedIndividual ,
+                       :Ingredient ;
+              :hasAllergen :Sesame_Allergen ;
+              :ingredientCategory :Plant_Category ;
+              :hasName "Sesame seeds" .
+
+
+###  http://example.org/kr25/restaurant#Shellfish_Category
+:Shellfish_Category rdf:type owl:NamedIndividual ,
+                             :IngredientCategory ;
+                    :hasName "shellfish" .
+
+
+###  http://example.org/kr25/restaurant#Shrimp
+:Shrimp rdf:type owl:NamedIndividual ,
+                 :Ingredient ;
+        :hasAllergen :Crustaceans_Allergen ;
+        :ingredientCategory :Shellfish_Category ;
+        :hasName "Shrimp" .
+
+
+###  http://example.org/kr25/restaurant#Shrimp_Rice
+:Shrimp_Rice rdf:type owl:NamedIndividual ,
+                      :Dish ;
+             :hasIngredient :Olive_Oil ,
+                            :Rice ,
+                            :Shrimp ;
+             :satisfiesDiet :Halal ,
+                            :Pescatarian ;
+             :gramsOfCarbs 50 ;
+             :gramsOfFat 10 ;
+             :gramsOfProtein 28 ;
+             :hasName "Shrimp Rice" .
+
+
+###  http://example.org/kr25/restaurant#Soy_Allergen
+:Soy_Allergen rdf:type owl:NamedIndividual ,
+                       :Allergen ;
+              :hasName "soy" .
 
 
 ###  http://example.org/kr25/restaurant#Spice_Garden
@@ -232,11 +1284,56 @@
                        :Casual_Restaurant ,
                        :Restaurant ;
               :hasCuisine :Indian ;
+              :servesCheap :Lentil_Soup ,
+                           :Peanut_Noodles ;
+              :servesMedium :Chickpea_Curry ,
+                            :Tofu_Stir_Fry ;
               :closesAt 2200 ;
               :hasName "Spice Garden" ;
               :hasPublicAccess "true"^^xsd:boolean ;
               :opensAt 1100 ;
+              :ownerGender "female" ;
               :petsAllowed "true"^^xsd:boolean .
+
+
+###  http://example.org/kr25/restaurant#Sulphites_Allergen
+:Sulphites_Allergen rdf:type owl:NamedIndividual ,
+                             :Allergen ;
+                    :hasName "sulphites" .
+
+
+###  http://example.org/kr25/restaurant#Tofu
+:Tofu rdf:type owl:NamedIndividual ,
+               :Ingredient ;
+      :hasAllergen :Soy_Allergen ;
+      :ingredientCategory :Plant_Category ;
+      :hasName "Tofu" .
+
+
+###  http://example.org/kr25/restaurant#Tofu_Stir_Fry
+:Tofu_Stir_Fry rdf:type owl:NamedIndividual ,
+                        :Dish ;
+               :hasIngredient :Broccoli ,
+                              :Carrot ,
+                              :Olive_Oil ,
+                              :Sesame_Seeds ,
+                              :Tofu ;
+               :satisfiesDiet :Halal ,
+                              :Kosher ,
+                              :Pescatarian ,
+                              :Vegan ,
+                              :Vegetarian ;
+               :gramsOfCarbs 20 ;
+               :gramsOfFat 12 ;
+               :gramsOfProtein 18 ;
+               :hasName "Tofu Stir Fry" .
+
+
+###  http://example.org/kr25/restaurant#Tomato
+:Tomato rdf:type owl:NamedIndividual ,
+                 :Ingredient ;
+        :ingredientCategory :Plant_Category ;
+        :hasName "Tomato" .
 
 
 ###  http://example.org/kr25/restaurant#Trattoria_Roma
@@ -244,16 +1341,89 @@
                          :Fine_Dining_Restaurant ,
                          :Restaurant ;
                 :hasCuisine :Italian ;
+                :servesExpensive :Grilled_Salmon ;
+                :servesMedium :Carbonara ,
+                              :Margherita_Pizza ;
                 :closesAt 2300 ;
                 :hasName "Trattoria Roma" ;
                 :hasPublicAccess "true"^^xsd:boolean ;
                 :opensAt 1800 ;
+                :ownerGender "male" ;
                 :petsAllowed "false"^^xsd:boolean .
 
 
 ###  http://example.org/kr25/restaurant#Turkish
 :Turkish rdf:type owl:NamedIndividual ,
                   :Cuisine .
+
+
+###  http://example.org/kr25/restaurant#Vegan
+:Vegan rdf:type owl:NamedIndividual ,
+                :DietaryRestriction ;
+       :hasName "vegan" .
+
+
+###  http://example.org/kr25/restaurant#Vegetarian
+:Vegetarian rdf:type owl:NamedIndividual ,
+                     :DietaryRestriction ;
+            :hasName "vegetarian" .
+
+
+###  http://example.org/kr25/restaurant#Walnuts
+:Walnuts rdf:type owl:NamedIndividual ,
+                  :Ingredient ;
+         :hasAllergen :Nuts_Allergen ;
+         :ingredientCategory :Plant_Category ;
+         :hasName "Walnuts" .
+
+
+###  http://example.org/kr25/restaurant#Wheat_Flour
+:Wheat_Flour rdf:type owl:NamedIndividual ,
+                      :Ingredient ;
+             :hasAllergen :Gluten_Allergen ;
+             :ingredientCategory :Plant_Category ;
+             :hasName "Wheat flour" .
+
+
+#################################################################
+#    General axioms
+#################################################################
+
+[ rdf:type owl:AllDifferent ;
+  owl:distinctMembers ( :Alcohol_Category
+                        :Beef_Category
+                        :Dairy_Category
+                        :Egg_Category
+                        :Fish_Category
+                        :Honey_Category
+                        :Lamb_Category
+                        :Plant_Category
+                        :Pork_Category
+                        :Poultry_Category
+                        :Shellfish_Category
+                      )
+] .
+
+
+[ rdf:type owl:AllDifferent ;
+  owl:distinctMembers ( :Beef_Burger
+                        :Beef_Stew
+                        :Carbonara
+                        :Cheese_Omelette
+                        :Chickpea_Curry
+                        :Grilled_Chicken
+                        :Grilled_Salmon
+                        :Honey_Walnut_Cake
+                        :Kosher_Chicken_Plate
+                        :Lamb_Kebab
+                        :Lentil_Soup
+                        :Margherita_Pizza
+                        :Mussels_In_Wine
+                        :Peanut_Noodles
+                        :Shrimp_Rice
+                        :Tofu_Stir_Fry
+                      )
+] .
 
 
 ###  Generated by the OWL API (version 4.5.29.2024-05-13T12:11:03Z) https://github.com/owlcs/owlapi
