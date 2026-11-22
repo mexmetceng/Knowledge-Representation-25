@@ -1,11 +1,3 @@
-% Regression checks for CQ1-CQ15 using the sample inputs in queries.dl.
-% Run from the repository root with Nemo:
-%   cat datalog/facts.dl datalog/rules.dl datalog/queries.dl datalog/competency-tests.dl > /tmp/kr25-tests.rls
-%   nmo /tmp/kr25-tests.rls --export-dir /tmp/kr25-test-results
-% Or paste the four files in that order into Nemo Web.
-% Expected rows capture the project rules and sample inputs at commit 0deab2e.
-% Update expected rows when intentionally changing the sample inputs or semantics.
-
 % Compare both directions to detect missing and unexpected answers.
 test_case("CQ01").
 expected_cq1(r_harbour_grill).
