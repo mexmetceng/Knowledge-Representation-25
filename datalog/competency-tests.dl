@@ -1,0 +1,127 @@
+% Regression checks for CQ1-CQ15 using the sample inputs in queries.dl.
+% Run from the repository root with Nemo:
+%   cat datalog/facts.dl datalog/rules.dl datalog/queries.dl datalog/competency-tests.dl > /tmp/kr25-tests.rls
+%   nmo /tmp/kr25-tests.rls --export-dir /tmp/kr25-test-results
+% Or paste the four files in that order into Nemo Web.
+% Expected rows capture the project rules and sample inputs at commit 0deab2e.
+% Update expected rows when intentionally changing the sample inputs or semantics.
+
+% Compare both directions to detect missing and unexpected answers.
+test_case("CQ01").
+expected_cq1(r_harbour_grill).
+expected_cq1(r_kebab_corner).
+expected_cq1(r_lobby_cafe).
+expected_cq1(r_spice_garden).
+expected_cq1(r_trattoria_roma).
+test_failure("CQ01") :- expected_cq1(?value1), ~cq1(?value1).
+test_failure("CQ01") :- cq1(?value1), ~expected_cq1(?value1).
+
+test_case("CQ02").
+expected_cq2(r_kebab_corner).
+expected_cq2(r_lobby_cafe).
+expected_cq2(r_spice_garden).
+test_failure("CQ02") :- expected_cq2(?value1), ~cq2(?value1).
+test_failure("CQ02") :- cq2(?value1), ~expected_cq2(?value1).
+
+test_case("CQ03").
+expected_cq3(r_lobby_cafe).
+expected_cq3(r_morning_buffet).
+test_failure("CQ03") :- expected_cq3(?value1), ~cq3(?value1).
+test_failure("CQ03") :- cq3(?value1), ~expected_cq3(?value1).
+
+test_case("CQ04").
+expected_cq4(r_spice_garden).
+test_failure("CQ04") :- expected_cq4(?value1), ~cq4(?value1).
+test_failure("CQ04") :- cq4(?value1), ~expected_cq4(?value1).
+
+test_case("CQ05").
+% CQ5 is empty because the sample restaurant has no recorded status.
+% This check treats the missing value as unknown.
+test_failure("CQ05") :- cq5(?restaurant).
+
+test_case("CQ06").
+expected_cq6(r_harbour_grill, seafood).
+test_failure("CQ06") :- expected_cq6(?value1, ?value2), ~cq6(?value1, ?value2).
+test_failure("CQ06") :- cq6(?value1, ?value2), ~expected_cq6(?value1, ?value2).
+
+test_case("CQ07").
+expected_cq7(r_kebab_corner, turkish).
+test_failure("CQ07") :- expected_cq7(?value1, ?value2), ~cq7(?value1, ?value2).
+test_failure("CQ07") :- cq7(?value1, ?value2), ~expected_cq7(?value1, ?value2).
+
+test_case("CQ08").
+expected_cq8(r_kebab_corner, d_chickpea_curry).
+expected_cq8(r_lobby_cafe, d_cheese_omelette).
+expected_cq8(r_lobby_cafe, d_honey_walnut_cake).
+expected_cq8(r_lobby_cafe, d_margherita_pizza).
+expected_cq8(r_morning_buffet, d_cheese_omelette).
+expected_cq8(r_morning_buffet, d_honey_walnut_cake).
+expected_cq8(r_morning_buffet, d_lentil_soup).
+expected_cq8(r_spice_garden, d_chickpea_curry).
+expected_cq8(r_spice_garden, d_lentil_soup).
+expected_cq8(r_spice_garden, d_peanut_noodles).
+expected_cq8(r_spice_garden, d_tofu_stir_fry).
+expected_cq8(r_trattoria_roma, d_margherita_pizza).
+test_failure("CQ08") :- expected_cq8(?value1, ?value2), ~cq8(?value1, ?value2).
+test_failure("CQ08") :- cq8(?value1, ?value2), ~expected_cq8(?value1, ?value2).
+
+test_case("CQ09").
+expected_cq9(r_grand_dining, d_grilled_chicken).
+expected_cq9(r_harbour_grill, d_grilled_salmon).
+expected_cq9(r_harbour_grill, d_shrimp_rice).
+expected_cq9(r_kebab_corner, d_chickpea_curry).
+expected_cq9(r_kebab_corner, d_lamb_kebab).
+expected_cq9(r_lobby_cafe, d_cheese_omelette).
+expected_cq9(r_lobby_cafe, d_grilled_chicken).
+expected_cq9(r_lobby_cafe, d_honey_walnut_cake).
+expected_cq9(r_lobby_cafe, d_margherita_pizza).
+expected_cq9(r_morning_buffet, d_cheese_omelette).
+expected_cq9(r_morning_buffet, d_honey_walnut_cake).
+expected_cq9(r_morning_buffet, d_lentil_soup).
+expected_cq9(r_spice_garden, d_chickpea_curry).
+expected_cq9(r_spice_garden, d_lentil_soup).
+expected_cq9(r_spice_garden, d_peanut_noodles).
+expected_cq9(r_spice_garden, d_tofu_stir_fry).
+expected_cq9(r_trattoria_roma, d_grilled_salmon).
+expected_cq9(r_trattoria_roma, d_margherita_pizza).
+test_failure("CQ09") :- expected_cq9(?value1, ?value2), ~cq9(?value1, ?value2).
+test_failure("CQ09") :- cq9(?value1, ?value2), ~expected_cq9(?value1, ?value2).
+
+test_case("CQ10").
+expected_cq10(d_kosher_chicken_plate).
+test_failure("CQ10") :- expected_cq10(?value1), ~cq10(?value1).
+test_failure("CQ10") :- cq10(?value1), ~expected_cq10(?value1).
+
+test_case("CQ11").
+expected_cq11(d_grilled_chicken, 38, 45, 10).
+test_failure("CQ11") :- expected_cq11(?value1, ?value2, ?value3, ?value4), ~cq11(?value1, ?value2, ?value3, ?value4).
+test_failure("CQ11") :- cq11(?value1, ?value2, ?value3, ?value4), ~expected_cq11(?value1, ?value2, ?value3, ?value4).
+
+test_case("CQ12").
+expected_cq12(i_wheat_flour, gluten).
+test_failure("CQ12") :- expected_cq12(?value1, ?value2), ~cq12(?value1, ?value2).
+test_failure("CQ12") :- cq12(?value1, ?value2), ~expected_cq12(?value1, ?value2).
+
+test_case("CQ13").
+expected_cq13(d_tofu_stir_fry, soy).
+test_failure("CQ13") :- expected_cq13(?value1, ?value2), ~cq13(?value1, ?value2).
+test_failure("CQ13") :- cq13(?value1, ?value2), ~expected_cq13(?value1, ?value2).
+
+test_case("CQ14").
+expected_cq14(r_harbour_grill, expensive, 3).
+expected_cq14(r_harbour_grill, medium, 2).
+test_failure("CQ14") :- expected_cq14(?value1, ?value2, ?value3), ~cq14(?value1, ?value2, ?value3).
+test_failure("CQ14") :- cq14(?value1, ?value2, ?value3), ~expected_cq14(?value1, ?value2, ?value3).
+
+test_case("CQ15").
+expected_cq15(d_grilled_salmon, r_harbour_grill, expensive).
+expected_cq15(d_grilled_salmon, r_trattoria_roma, expensive).
+test_failure("CQ15") :- expected_cq15(?value1, ?value2, ?value3), ~cq15(?value1, ?value2, ?value3).
+test_failure("CQ15") :- cq15(?value1, ?value2, ?value3), ~expected_cq15(?value1, ?value2, ?value3).
+
+competency_test_result(?question, "PASS") :-
+    test_case(?question), ~test_failure(?question).
+competency_test_result(?question, "FAIL") :-
+    test_case(?question), test_failure(?question).
+
+@export competency_test_result :- csv{}.
