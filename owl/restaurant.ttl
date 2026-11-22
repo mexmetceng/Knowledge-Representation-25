@@ -160,8 +160,8 @@
 :Allergen rdf:type owl:Class .
 
 
-###  http://example.org/kr25/restaurant#AllergenContainingDish
-:AllergenContainingDish rdf:type owl:Class ;
+###  http://example.org/kr25/restaurant#DishContainingAllergens
+:DishContainingAllergens rdf:type owl:Class ;
                         owl:equivalentClass [ owl:intersectionOf ( :Dish
                                                                    [ rdf:type owl:Restriction ;
                                                                      owl:onProperty :containsAllergen ;
@@ -204,8 +204,8 @@
                                              ] .
 
 
-###  http://example.org/kr25/restaurant#AnimalProductContainingDish
-:AnimalProductContainingDish rdf:type owl:Class ;
+###  http://example.org/kr25/restaurant#DishContainingAnimalProducts
+:DishContainingAnimalProducts rdf:type owl:Class ;
                              owl:equivalentClass [ owl:intersectionOf ( :Dish
                                                                         [ rdf:type owl:Restriction ;
                                                                           owl:onProperty :hasIngredient ;
@@ -289,8 +289,8 @@
                                     ] .
 
 
-###  http://example.org/kr25/restaurant#FishOrShellfishDish
-:FishOrShellfishDish rdf:type owl:Class ;
+###  http://example.org/kr25/restaurant#DishContainingFishOrShellfish
+:DishContainingFishOrShellfish rdf:type owl:Class ;
                      owl:equivalentClass [ owl:intersectionOf ( :Dish
                                                                 [ rdf:type owl:Restriction ;
                                                                   owl:onProperty :hasIngredient ;
@@ -305,8 +305,8 @@
                                          ] .
 
 
-###  http://example.org/kr25/restaurant#GlutenContainingDish
-:GlutenContainingDish rdf:type owl:Class ;
+###  http://example.org/kr25/restaurant#DishContainingGluten
+:DishContainingGluten rdf:type owl:Class ;
                       owl:equivalentClass [ owl:intersectionOf ( :Dish
                                                                  [ rdf:type owl:Restriction ;
                                                                    owl:onProperty :containsAllergen ;
@@ -395,8 +395,8 @@
                                  ] .
 
 
-###  http://example.org/kr25/restaurant#MeatContainingDish
-:MeatContainingDish rdf:type owl:Class ;
+###  http://example.org/kr25/restaurant#DishContainingMeat
+:DishContainingMeat rdf:type owl:Class ;
                     owl:equivalentClass [ owl:intersectionOf ( :Dish
                                                                [ rdf:type owl:Restriction ;
                                                                  owl:onProperty :hasIngredient ;
@@ -426,8 +426,8 @@
                 owl:disjointWith :PlantIngredient .
 
 
-###  http://example.org/kr25/restaurant#MilkAllergenContainingDish
-:MilkAllergenContainingDish rdf:type owl:Class ;
+###  http://example.org/kr25/restaurant#DishContainingMilkAllergen
+:DishContainingMilkAllergen rdf:type owl:Class ;
                             owl:equivalentClass [ owl:intersectionOf ( :Dish
                                                                        [ rdf:type owl:Restriction ;
                                                                          owl:onProperty :containsAllergen ;
@@ -450,8 +450,8 @@
                                               ] .
 
 
-###  http://example.org/kr25/restaurant#PeanutContainingDish
-:PeanutContainingDish rdf:type owl:Class ;
+###  http://example.org/kr25/restaurant#DishContainingPeanuts
+:DishContainingPeanuts rdf:type owl:Class ;
                       owl:equivalentClass [ owl:intersectionOf ( :Dish
                                                                  [ rdf:type owl:Restriction ;
                                                                    owl:onProperty :containsAllergen ;
