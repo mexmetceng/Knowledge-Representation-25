@@ -1,0 +1,286 @@
+% =====================================================================
+% Restaurant knowledge base K = <D, P> in Datalog (Nemo syntax)
+% Source: restaurants.csv, menu.csv, dishes.csv, ingredients.csv,
+%         dish-ingredients.csv
+% Empty CSV cells give no fact.
+% =====================================================================
+
+% ---------------------------------------------------------------------
+% DATABASE D (facts)
+% ---------------------------------------------------------------------
+
+% restaurant(Id, Name, Type, Cuisine)
+restaurant(r_harbour_grill, "Harbour Grill", seafood, greek).
+restaurant(r_kebab_corner, "Kebab Corner", fast_food, turkish).
+restaurant(r_trattoria_roma, "Trattoria Roma", fine_dining, italian).
+restaurant(r_spice_garden, "Spice Garden", casual, indian).
+restaurant(r_grand_dining, "Grand Dining Room", fine_dining, international).
+restaurant(r_morning_buffet, "Morning Buffet", buffet, international).
+restaurant(r_lobby_cafe, "Lobby Cafe", cafe, international).
+
+% public_access(Id, true|false), pets_allowed(Id, true|false)
+public_access(r_harbour_grill, true).
+public_access(r_kebab_corner, true).
+public_access(r_trattoria_roma, true).
+public_access(r_spice_garden, true).
+public_access(r_grand_dining, false).
+public_access(r_morning_buffet, false).
+public_access(r_lobby_cafe, true).
+pets_allowed(r_harbour_grill, false).
+pets_allowed(r_kebab_corner, true).
+pets_allowed(r_trattoria_roma, false).
+pets_allowed(r_spice_garden, true).
+pets_allowed(r_grand_dining, false).
+pets_allowed(r_morning_buffet, false).
+pets_allowed(r_lobby_cafe, true).
+
+% opening_hours(Id, Opens, Closes)
+opening_hours(r_harbour_grill, "12:00", "23:00").
+opening_hours(r_kebab_corner, "10:00", "02:00").
+opening_hours(r_trattoria_roma, "18:00", "23:00").
+opening_hours(r_spice_garden, "11:00", "22:00").
+opening_hours(r_grand_dining, "18:30", "22:30").
+opening_hours(r_morning_buffet, "06:30", "10:30").
+opening_hours(r_lobby_cafe, "07:00", "19:00").
+
+% owner_gender(Id, Gender)
+owner_gender(r_harbour_grill, female).
+owner_gender(r_kebab_corner, male).
+owner_gender(r_trattoria_roma, male).
+owner_gender(r_spice_garden, female).
+owner_gender(r_grand_dining, female).
+owner_gender(r_morning_buffet, male).
+owner_gender(r_lobby_cafe, female).
+% lgbtq_friendly: all cells are empty, so there are no facts.
+
+% dish(Id, Name, Protein_g, Carbs_g, Fat_g)
+dish(d_lentil_soup, "Lentil Soup", 12, 30, 5).
+dish(d_chickpea_curry, "Chickpea Curry", 14, 55, 9).
+dish(d_tofu_stir_fry, "Tofu Stir Fry", 18, 20, 12).
+dish(d_peanut_noodles, "Peanut Noodles", 14, 65, 16).
+dish(d_margherita_pizza, "Margherita Pizza", 18, 60, 14).
+dish(d_cheese_omelette, "Cheese Omelette", 22, 2, 28).
+dish(d_honey_walnut_cake, "Honey Walnut Cake", 8, 55, 24).
+dish(d_grilled_chicken, "Grilled Chicken", 38, 45, 10).
+dish(d_kosher_chicken_plate, "Kosher Chicken Plate", 36, 40, 9).
+dish(d_beef_burger, "Beef Burger", 30, 40, 28).
+dish(d_lamb_kebab, "Lamb Kebab", 32, 35, 22).
+dish(d_carbonara, "Carbonara", 25, 55, 30).
+dish(d_beef_stew, "Beef Stew", 30, 18, 15).
+dish(d_grilled_salmon, "Grilled Salmon", 34, 5, 22).
+dish(d_shrimp_rice, "Shrimp Rice", 28, 50, 10).
+dish(d_mussels_wine, "Mussels in Wine", 24, 8, 14).
+
+% ingredient(Id, Name, Category)
+ingredient(i_lentils, "Lentils", plant).
+ingredient(i_chickpeas, "Chickpeas", plant).
+ingredient(i_rice, "Rice", plant).
+ingredient(i_tomato, "Tomato", plant).
+ingredient(i_carrot, "Carrot", plant).
+ingredient(i_broccoli, "Broccoli", plant).
+ingredient(i_olive_oil, "Olive oil", plant).
+ingredient(i_wheat_flour, "Wheat flour", plant).
+ingredient(i_peanuts, "Peanuts", plant).
+ingredient(i_walnuts, "Walnuts", plant).
+ingredient(i_tofu, "Tofu", plant).
+ingredient(i_sesame, "Sesame seeds", plant).
+ingredient(i_celery, "Celery", plant).
+ingredient(i_mustard, "Mustard", plant).
+ingredient(i_milk, "Milk", dairy).
+ingredient(i_cheese, "Cheese", dairy).
+ingredient(i_butter, "Butter", dairy).
+ingredient(i_egg, "Egg", egg).
+ingredient(i_honey, "Honey", honey).
+ingredient(i_chicken_halal, "Chicken (halal)", poultry).
+ingredient(i_chicken_kosher, "Chicken (kosher)", poultry).
+ingredient(i_beef_halal, "Beef (halal)", beef).
+ingredient(i_beef_unknown, "Beef", beef).
+ingredient(i_lamb_halal, "Lamb (halal)", lamb).
+ingredient(i_pork, "Pork", pork).
+ingredient(i_bacon, "Bacon", pork).
+ingredient(i_salmon, "Salmon", fish).
+ingredient(i_shrimp, "Shrimp", shellfish).
+ingredient(i_mussels, "Mussels", shellfish).
+ingredient(i_red_wine, "Red Wine", alcohol).
+
+% allergen(Ingredient, Allergen)
+allergen(i_wheat_flour, gluten).
+allergen(i_peanuts, peanuts).
+allergen(i_walnuts, nuts).
+allergen(i_tofu, soy).
+allergen(i_sesame, sesame).
+allergen(i_celery, celery).
+allergen(i_mustard, mustard).
+allergen(i_milk, milk).
+allergen(i_cheese, milk).
+allergen(i_butter, milk).
+allergen(i_egg, egg).
+allergen(i_salmon, fish).
+allergen(i_shrimp, crustaceans).
+allergen(i_mussels, molluscs).
+allergen(i_red_wine, sulphites).
+
+% slaughter(Ingredient, Method)
+slaughter(i_chicken_halal, halal).
+slaughter(i_chicken_kosher, kosher).
+slaughter(i_beef_halal, halal).
+slaughter(i_lamb_halal, halal).
+
+% dish_ingredient(Dish, Ingredient)
+dish_ingredient(d_lentil_soup, i_lentils).
+dish_ingredient(d_lentil_soup, i_carrot).
+dish_ingredient(d_lentil_soup, i_tomato).
+dish_ingredient(d_lentil_soup, i_olive_oil).
+dish_ingredient(d_chickpea_curry, i_chickpeas).
+dish_ingredient(d_chickpea_curry, i_tomato).
+dish_ingredient(d_chickpea_curry, i_rice).
+dish_ingredient(d_chickpea_curry, i_olive_oil).
+dish_ingredient(d_tofu_stir_fry, i_tofu).
+dish_ingredient(d_tofu_stir_fry, i_broccoli).
+dish_ingredient(d_tofu_stir_fry, i_carrot).
+dish_ingredient(d_tofu_stir_fry, i_sesame).
+dish_ingredient(d_tofu_stir_fry, i_olive_oil).
+dish_ingredient(d_peanut_noodles, i_wheat_flour).
+dish_ingredient(d_peanut_noodles, i_peanuts).
+dish_ingredient(d_peanut_noodles, i_sesame).
+dish_ingredient(d_margherita_pizza, i_wheat_flour).
+dish_ingredient(d_margherita_pizza, i_tomato).
+dish_ingredient(d_margherita_pizza, i_cheese).
+dish_ingredient(d_margherita_pizza, i_olive_oil).
+dish_ingredient(d_cheese_omelette, i_egg).
+dish_ingredient(d_cheese_omelette, i_cheese).
+dish_ingredient(d_cheese_omelette, i_butter).
+dish_ingredient(d_honey_walnut_cake, i_wheat_flour).
+dish_ingredient(d_honey_walnut_cake, i_egg).
+dish_ingredient(d_honey_walnut_cake, i_butter).
+dish_ingredient(d_honey_walnut_cake, i_honey).
+dish_ingredient(d_honey_walnut_cake, i_walnuts).
+dish_ingredient(d_grilled_chicken, i_chicken_halal).
+dish_ingredient(d_grilled_chicken, i_rice).
+dish_ingredient(d_grilled_chicken, i_broccoli).
+dish_ingredient(d_grilled_chicken, i_olive_oil).
+dish_ingredient(d_kosher_chicken_plate, i_chicken_kosher).
+dish_ingredient(d_kosher_chicken_plate, i_carrot).
+dish_ingredient(d_kosher_chicken_plate, i_rice).
+dish_ingredient(d_lamb_kebab, i_lamb_halal).
+dish_ingredient(d_lamb_kebab, i_tomato).
+dish_ingredient(d_lamb_kebab, i_wheat_flour).
+dish_ingredient(d_carbonara, i_bacon).
+dish_ingredient(d_carbonara, i_egg).
+dish_ingredient(d_carbonara, i_cheese).
+dish_ingredient(d_carbonara, i_wheat_flour).
+dish_ingredient(d_beef_stew, i_beef_halal).
+dish_ingredient(d_beef_stew, i_carrot).
+dish_ingredient(d_beef_stew, i_tomato).
+dish_ingredient(d_beef_stew, i_red_wine).
+dish_ingredient(d_grilled_salmon, i_salmon).
+dish_ingredient(d_grilled_salmon, i_olive_oil).
+dish_ingredient(d_grilled_salmon, i_broccoli).
+dish_ingredient(d_beef_burger, i_beef_unknown).
+dish_ingredient(d_beef_burger, i_cheese).
+dish_ingredient(d_beef_burger, i_tomato).
+dish_ingredient(d_mussels_wine, i_mussels).
+dish_ingredient(d_mussels_wine, i_red_wine).
+dish_ingredient(d_mussels_wine, i_celery).
+dish_ingredient(d_shrimp_rice, i_shrimp).
+dish_ingredient(d_shrimp_rice, i_rice).
+dish_ingredient(d_shrimp_rice, i_olive_oil).
+
+% menu(Restaurant, Dish, PriceTier)
+menu(r_harbour_grill, d_grilled_salmon, expensive).
+menu(r_harbour_grill, d_shrimp_rice, medium).
+menu(r_harbour_grill, d_mussels_wine, medium).
+menu(r_kebab_corner, d_lamb_kebab, cheap).
+menu(r_kebab_corner, d_beef_burger, cheap).
+menu(r_kebab_corner, d_chickpea_curry, cheap).
+menu(r_trattoria_roma, d_margherita_pizza, medium).
+menu(r_trattoria_roma, d_carbonara, medium).
+menu(r_trattoria_roma, d_grilled_salmon, expensive).
+menu(r_spice_garden, d_chickpea_curry, medium).
+menu(r_spice_garden, d_lentil_soup, cheap).
+menu(r_spice_garden, d_tofu_stir_fry, medium).
+menu(r_spice_garden, d_peanut_noodles, cheap).
+menu(r_grand_dining, d_beef_stew, expensive).
+menu(r_grand_dining, d_kosher_chicken_plate, expensive).
+menu(r_grand_dining, d_grilled_chicken, expensive).
+menu(r_morning_buffet, d_cheese_omelette, cheap).
+menu(r_morning_buffet, d_honey_walnut_cake, cheap).
+menu(r_morning_buffet, d_lentil_soup, cheap).
+menu(r_lobby_cafe, d_cheese_omelette, medium).
+menu(r_lobby_cafe, d_honey_walnut_cake, medium).
+menu(r_lobby_cafe, d_margherita_pizza, medium).
+menu(r_lobby_cafe, d_grilled_chicken, medium).
+
+% Category taxonomy (facts)
+animal_category(dairy).   animal_category(egg).      animal_category(honey).
+animal_category(poultry). animal_category(beef).     animal_category(lamb).
+animal_category(pork).    animal_category(fish).     animal_category(shellfish).
+meat_category(poultry).   meat_category(beef).       meat_category(lamb).
+meat_category(pork).
+seafood_category(fish).   seafood_category(shellfish).
+
+% ---------------------------------------------------------------------
+% PROGRAM P (rules)
+% ---------------------------------------------------------------------
+
+% Projection
+is_restaurant(?r) :- restaurant(?r, ?n, ?t, ?c).
+is_dish(?d) :- dish(?d, ?n, ?p, ?c, ?f).
+serves(?r, ?d) :- menu(?r, ?d, ?tier).
+has_cheap_option(?r) :- menu(?r, ?d, cheap).
+
+% Join: categories and allergens of a dish
+dish_category(?d, ?c) :- dish_ingredient(?d, ?i), ingredient(?i, ?n, ?c).
+dish_allergen(?d, ?a) :- dish_ingredient(?d, ?i), allergen(?i, ?a).
+
+% Dish content
+contains_meat(?d)    :- dish_category(?d, ?c), meat_category(?c).
+contains_seafood(?d) :- dish_category(?d, ?c), seafood_category(?c).
+contains_animal_product(?d) :- dish_category(?d, ?c), animal_category(?c).
+
+% Diet violations. Two rules with the same head express disjunction.
+% Positive Datalog has no negation, so "suitable for" is not expressed.
+not_vegan(?d)       :- contains_animal_product(?d).
+not_vegetarian(?d)  :- contains_meat(?d).
+not_vegetarian(?d)  :- contains_seafood(?d).
+not_pescatarian(?d) :- contains_meat(?d).
+
+not_halal(?d) :- dish_category(?d, pork).
+not_halal(?d) :- dish_category(?d, alcohol).
+
+not_kosher(?d) :- dish_category(?d, pork).
+not_kosher(?d) :- dish_category(?d, shellfish).
+not_kosher(?d) :- contains_meat(?d), dish_category(?d, dairy).
+
+halal_meat_dish(?d)  :- dish_ingredient(?d, ?i), slaughter(?i, halal).
+kosher_meat_dish(?d) :- dish_ingredient(?d, ?i), slaughter(?i, kosher).
+
+% Restaurant level (A ⊓ ∃r.B ⊑ C pattern)
+serves_allergen(?r, ?a)  :- serves(?r, ?d), dish_allergen(?d, ?a).
+serves_meat(?r)          :- serves(?r, ?d), contains_meat(?d).
+serves_seafood(?r)       :- serves(?r, ?d), contains_seafood(?d).
+serves_alcohol(?r)       :- serves(?r, ?d), dish_category(?d, alcohol).
+serves_halal_meat(?r)    :- serves(?r, ?d), halal_meat_dish(?d).
+serves_kosher_meat(?r)   :- serves(?r, ?d), kosher_meat_dish(?d).
+pet_friendly_public(?r)  :- public_access(?r, true), pets_allowed(?r, true).
+not_public(?r)           :- public_access(?r, false).
+
+% ---------------------------------------------------------------------
+% INTEGRITY CONSTRAINTS
+% Nemo has no ⊥, so a special predicate shows each violation.
+%   ⊥ <- slaughter(I, halal) ∧ slaughter(I, kosher)
+%   ⊥ <- menu(R, D, cheap) ∧ menu(R, D, expensive)   (same for the other pairs)
+% ---------------------------------------------------------------------
+violation_slaughter(?i)  :- slaughter(?i, halal), slaughter(?i, kosher).
+violation_price(?r, ?d)  :- menu(?r, ?d, cheap), menu(?r, ?d, expensive).
+violation_price(?r, ?d)  :- menu(?r, ?d, cheap), menu(?r, ?d, medium).
+violation_price(?r, ?d)  :- menu(?r, ?d, medium), menu(?r, ?d, expensive).
+
+% Output (Nemo: show these predicates)
+@output not_vegan.
+@output not_vegetarian.
+@output not_halal.
+@output not_kosher.
+@output serves_allergen.
+@output violation_slaughter.
+@output violation_price.

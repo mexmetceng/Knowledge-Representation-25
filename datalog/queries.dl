@@ -1,2 +1,92 @@
 % Queries: one per competency question, labelled with its ID (CQ1, CQ2, ...)
-% from shared/competency-questions.md.
+% Parameters (X, Y, Z) are facts named cqN_param. Change them to ask other questions.
+% A yes/no question gives "yes" when its predicate has a result, and "no" when it is empty.
+
+% --- Parameters -----------------------------------------------------
+cq3_time(900).                         % X am, as HHMM
+cq4_restaurant(r_spice_garden).
+cq5_restaurant(r_lobby_cafe).
+cq6_restaurant(r_harbour_grill).
+cq7_restaurant(r_kebab_corner).
+cq10_restaurant(r_grand_dining).       % Y
+cq11_dish(d_grilled_chicken).
+cq11_protein_goal(30).                 % grams in one meal
+cq12_ingredient(i_wheat_flour).        % X
+cq13_dish(d_tofu_stir_fry).
+cq13_avoid(soy).
+cq14_restaurant(r_harbour_grill).      % X
+cq15_dish(d_grilled_salmon).           % meal X
+cq15_restaurant(r_harbour_grill).      % restaurants X, Y, Z ...
+cq15_restaurant(r_trattoria_roma).
+
+% --- 1. Accessibility -----------------------------------------------
+% CQ1: Which restaurants are available to the public?
+cq1(?r) :- public_access(?r, true).
+
+% CQ2: Which restaurants allow pets?
+cq2(?r) :- pets_allowed(?r, true).
+
+% CQ3: Which restaurants are open at X am?
+cq3(?r) :- cq3_time(?t), opening_hours(?r, ?o, ?c), ?o <= ?c, ?o <= ?t, ?t < ?c.
+cq3(?r) :- cq3_time(?t), opening_hours(?r, ?o, ?c), ?c < ?o, ?o <= ?t.   % closes after midnight
+cq3(?r) :- cq3_time(?t), opening_hours(?r, ?o, ?c), ?c < ?o, ?t < ?c.
+
+% --- 2. Social ------------------------------------------------------
+% CQ4: Is this restaurant owned by a woman?
+cq4(?r) :- cq4_restaurant(?r), owner_gender(?r, female).
+
+% CQ5: Is this restaurant LGBTQ+ friendly? (no data in the CSV: always empty)
+cq5(?r) :- cq5_restaurant(?r), lgbtq_friendly(?r, true).
+
+% --- 3. Restaurant type ---------------------------------------------
+% CQ6: Is this a fast food restaurant or a seafood restaurant?
+cq6(?r, fast_food) :- cq6_restaurant(?r), restaurant(?r, ?n, fast_food, ?c).
+cq6(?r, seafood)   :- cq6_restaurant(?r), restaurant(?r, ?n, seafood, ?c).
+
+% CQ7: Is this a Turkish restaurant or a Greek restaurant?
+cq7(?r, turkish) :- cq7_restaurant(?r), restaurant(?r, ?n, ?t, turkish).
+cq7(?r, greek)   :- cq7_restaurant(?r), restaurant(?r, ?n, ?t, greek).
+
+% --- 4. Dietary -----------------------------------------------------
+% CQ8: Which restaurant(s) offer vegetarian or vegan meals?
+cq8(?r, ?d) :- serves(?r, ?d), vegetarian(?d).
+cq8(?r, ?d) :- serves(?r, ?d), vegan(?d).
+
+% CQ9: Which restaurant(s) serve halal dishes?
+cq9(?r, ?d) :- serves(?r, ?d), halal(?d).
+
+% CQ10: What kosher meals does restaurant Y serve?
+cq10(?d) :- cq10_restaurant(?r), serves(?r, ?d), kosher(?d).
+
+% CQ11: Does that meal satisfy the protein goal in one meal? (shows carbs and fats too)
+cq11(?d, ?p, ?c, ?f) :- cq11_dish(?d), cq11_protein_goal(?g), dish(?d, ?n, ?p, ?c, ?f), ?p >= ?g.
+
+% --- 5. Allergen ----------------------------------------------------
+% CQ12: Which allergen does ingredient X contain? (empty = no allergen)
+cq12(?i, ?a) :- cq12_ingredient(?i), allergen(?i, ?a).
+
+% CQ13: Does this food contain the allergen you want to avoid?
+cq13(?d, ?a) :- cq13_dish(?d), cq13_avoid(?a), dish_allergen(?d, ?a).
+
+% --- 6. Price -------------------------------------------------------
+% CQ14: What is the price range of restaurant X? (all tiers on its menu)
+cq14(?r, ?tier, ?rank) :- cq14_restaurant(?r), menu(?r, ?d, ?tier), price_rank(?tier, ?rank).
+
+% CQ15: How does the price of meal X vary between restaurants X, Y, Z ...?
+cq15(?d, ?r, ?tier) :- cq15_dish(?d), cq15_restaurant(?r), menu(?r, ?d, ?tier).
+
+@output cq1.
+@output cq2.
+@output cq3.
+@output cq4.
+@output cq5.
+@output cq6.
+@output cq7.
+@output cq8.
+@output cq9.
+@output cq10.
+@output cq11.
+@output cq12.
+@output cq13.
+@output cq14.
+@output cq15.

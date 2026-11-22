@@ -1,1 +1,39 @@
 % Rules: vegetarian, vegan, allergen, halal, kosher classification.
+% "~" is stratified negation (Nemo). Every negated variable is bound first.
+
+% --- Helpers --------------------------------------------------------
+is_dish(?d) :- dish(?d, ?n, ?p, ?c, ?f).
+serves(?r, ?d) :- menu(?r, ?d, ?tier).
+dish_category(?d, ?c) :- dish_ingredient(?d, ?i), ingredient(?i, ?n, ?c).
+
+contains_meat(?d)           :- dish_category(?d, ?c), meat_category(?c).
+contains_seafood(?d)        :- dish_category(?d, ?c), seafood_category(?c).
+contains_animal_product(?d) :- dish_category(?d, ?c), animal_category(?c).
+
+% --- Allergen -------------------------------------------------------
+dish_allergen(?d, ?a) :- dish_ingredient(?d, ?i), allergen(?i, ?a).
+
+% --- Vegetarian / vegan ---------------------------------------------
+not_vegetarian(?d) :- contains_meat(?d).
+not_vegetarian(?d) :- contains_seafood(?d).
+vegetarian(?d) :- is_dish(?d), ~not_vegetarian(?d).
+
+not_vegan(?d) :- contains_animal_product(?d).
+vegan(?d) :- is_dish(?d), ~not_vegan(?d).
+
+% --- Halal ----------------------------------------------------------
+% Meat must have halal slaughter. No pork. No alcohol.
+non_halal_meat(?i) :- ingredient(?i, ?n, ?c), meat_category(?c), ~slaughter(?i, halal).
+not_halal(?d) :- dish_ingredient(?d, ?i), non_halal_meat(?i).
+not_halal(?d) :- dish_category(?d, pork).
+not_halal(?d) :- dish_category(?d, alcohol).
+halal(?d) :- is_dish(?d), ~not_halal(?d).
+
+% --- Kosher ---------------------------------------------------------
+% Meat must have kosher slaughter. No pork. No shellfish. No meat with dairy.
+non_kosher_meat(?i) :- ingredient(?i, ?n, ?c), meat_category(?c), ~slaughter(?i, kosher).
+not_kosher(?d) :- dish_ingredient(?d, ?i), non_kosher_meat(?i).
+not_kosher(?d) :- dish_category(?d, pork).
+not_kosher(?d) :- dish_category(?d, shellfish).
+not_kosher(?d) :- contains_meat(?d), dish_category(?d, dairy).
+kosher(?d) :- is_dish(?d), ~not_kosher(?d).
